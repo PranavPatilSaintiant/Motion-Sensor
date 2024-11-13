@@ -74,15 +74,19 @@ export CMSIS_ROOT
 # Source files for this test (add path to VPATH below)
 SRCS  = main.c
 SRCS  += $(wildcard Source/**/*.c)
+SRCS  += $(wildcard Source/**/**/*.c)
 #SRCS += sla_header.c
 
 # Where to find source files for this test
 VPATH = .
 VPATH += $(CMSIS_ROOT)/Device/Maxim/$(TARGET_UC)/Source
 VPATH += $(wildcard Source/**)
+VPATH += $(wildcard Source/**/**)
 # Where to find header files for this test
 IPATH = .
 IPATH += $(wildcard Source/**)
+IPATH += $(wildcard Source/**/**)
+# IPATH += "C:/User/Motion_Sensor/Source/Drivers/MPU6050/"
 # Enable assertion checking for development
 PROJ_CFLAGS+=-DMXC_ASSERT_ENABLE 
 

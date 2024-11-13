@@ -31,4 +31,5 @@
 #define MPU6050_ACCEL_OUT 0x3B  ///< base address for sensor data reads
 #define MPU6050_MOT_THR 0x1F    ///< Motion detection threshold bits [7:0]
 #define MPU6050_MOT_DUR 0x20 ///< Duration counter threshold for motion int. 1 kHz rate, LSB = 1 ms
-#endif /* _MXC_I2C_H_ */
+
+#endif

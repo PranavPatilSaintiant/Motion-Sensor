@@ -35,7 +35,7 @@ C:/User/Motion_Sensor/build/main.o: main.c \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\sys\_locale.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\strings.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\sys\string.h \
- Source/Drivers/drv_i2c.h Source/Drivers/MPU6050/MPU6050_reg.h \
+ Source/Drivers/i2c_rw.h Source/Drivers/drv_i2c.h \
  C:/MaximSDK/Libraries/PeriphDrivers/Include/MAX32655/mxc_device.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32655/Include/max32655.h \
  C:/MaximSDK/Libraries/CMSIS/Include/core_cm4.h \
@@ -48,13 +48,15 @@ C:/User/Motion_Sensor/build/main.o: main.c \
  C:/MaximSDK/Libraries/PeriphDrivers/Include/MAX32655/gpio.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32655/Include/gpio_regs.h \
  C:/MaximSDK/Libraries/PeriphDrivers/Include/MAX32655/mxc_delay.h \
- C:/MaximSDK/Libraries/PeriphDrivers/Include/MAX32655/nvic_table.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32655/Include/i2c_regs.h \
  C:/MaximSDK/Libraries/PeriphDrivers/Include/MAX32655/i2c.h \
  C:/MaximSDK/Libraries/PeriphDrivers/Include/MAX32655/mxc_sys.h \
  C:/MaximSDK/Libraries/PeriphDrivers/Include/MAX32655/mxc_device.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32655/Include/gcr_regs.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32655/Include/lpgcr_regs.h \
+ Source/Drivers/MPU6050/MPU6050.h Source/Drivers/i2c_rw.h \
+ Source/Drivers/MPU6050/MPU6050_reg.h \
+ C:/MaximSDK/Libraries/PeriphDrivers/Include/MAX32655/nvic_table.h \
  C:/MaximSDK/Libraries/PeriphDrivers/Include/MAX32655/dma.h \
  c:\maximsdk\tools\gnutools\10.3\lib\gcc\arm-none-eabi\10.3.1\include\stdbool.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32655/Include/dma_regs.h \
