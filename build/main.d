@@ -35,7 +35,7 @@ C:/User/Motion_Sensor/build/main.o: main.c \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\sys\_locale.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\strings.h \
  c:\maximsdk\tools\gnutools\10.3\arm-none-eabi\include\sys\string.h \
- Source/Drivers/drv_i2c.h \
+ Source/Drivers/drv_i2c.h Source/Drivers/MPU6050/MPU6050_reg.h \
  C:/MaximSDK/Libraries/PeriphDrivers/Include/MAX32655/mxc_device.h \
  C:/MaximSDK/Libraries/CMSIS/Device/Maxim/MAX32655/Include/max32655.h \
  C:/MaximSDK/Libraries/CMSIS/Include/core_cm4.h \

@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "drv_i2c.h"
+#include "Source/Drivers/MPU6050/MPU6050_reg.h"
 
 #include "mxc_device.h"
 #include "mxc_delay.h"
@@ -24,7 +25,7 @@
 #define MFIO MXC_GPIO_PIN_25
 
 #define MAX_COMMAND_LEN 2
-#define CMD_DELAY 2
+#define CMD_DELAY 10
 
 // typedef enum { FAILED, PASSED } test_t;
 
@@ -134,7 +135,7 @@ int main()
     MXC_I2C_SetFrequency(I2C_MASTER, I2C_FREQ);
     
     //Recieve Device Address from Module
-    read_req(0x75);
+    read_req(MPU6050_WHO_AM_I);
     if(resp[0]!=I2C_SLAVE_ADDR){
         printf("MPU6050 Not Connected\n");
     }
@@ -142,52 +143,12 @@ int main()
         printf("MPU6050 Connected\n");
     }
     //Reset Sequence
-    //0x6B PWR MGMT
-    //0x68 SIGNAL PATH
-    MXC_DELAY_MSEC(500);
-    read_req(0x6B);
-    uint8_t _pwr_mgmt = resp[0];
-    print_reg(_pwr_mgmt);
-    _pwr_mgmt |= (1 << 7);
-    print_reg(_pwr_mgmt);
+    MXC_DELAY_MSEC(10);
+    write_bitslice(MPU6050_PWR_MGMT_1,0x01,1,7);
+    
 
-    write_req(0x6B,_pwr_mgmt);
-    printf("\nDevice resetted\n");
-    read_req(0x6B);
-    _pwr_mgmt = resp[0];
-    print_reg(_pwr_mgmt);
-
-    // while ((_pwr_mgmt|| 0x7F) == 1) 
-    // {
-    //     read_req(0x6B);
-    //     _pwr_mgmt = resp[0];
-    //     MXC_DELAY_MSEC(1);
-    // }
-    MXC_DELAY_MSEC(100);
-
-    //Signal Path Reset
-    read_req(0x68);
-    uint8_t sig_path = resp[0];
-    print_reg(sig_path);
-
-    write_req(0x68,0x07);
-
-    read_req(0x68);
-    _pwr_mgmt = resp[0];
-    print_reg(_pwr_mgmt);
-
-    //Set Sample Rate Divisor
-    write_req(0x19,0x00);
-
-    //Set Filter Band Width
-    write_req(0x1A,0x00);
-
-    //Set GyroScope Range
-    write_req(0x1B,0x00);
-
-    //Set Accelerometer Range
-    write_req(0x1B,0x00);
-
+    // read_req(MPU6050_SIGNAL_PATH_RESET);
+    // print_reg(resp[0]);
 }
 
 void read_req(uint8_t regi)
@@ -229,7 +190,9 @@ void read_req(uint8_t regi)
 
 void write_req(uint8_t regi, uint8_t data)
 {
-    uint8_t TxBuff[2] = {regi,data};
+    uint8_t TxBuff[MAX_COMMAND_LEN];
+    TxBuff[0] = regi;
+    TxBuff[1] = data;
     mxc_i2c_req_t SendCommand;
     SendCommand.i2c      = I2C_MASTER;
     SendCommand.addr     = I2C_SLAVE_ADDR;
@@ -245,6 +208,29 @@ void write_req(uint8_t regi, uint8_t data)
         return FAILED;
     }
     MXC_DELAY_MSEC(CMD_DELAY);
+}
+
+uint8_t read_bitslice(uint8_t regi,uint8_t bits,uint8_t shift){
+    read_req(regi);
+    uint8_t val = resp[0];
+    val >>= shift;
+    return val & ((1 << (bits)) - 1);
+}
+
+void write_bitslice(uint8_t regi, uint8_t data, uint8_t bits, uint8_t shift)
+{
+    read_req(regi);
+    uint8_t val = resp[0];
+
+    // mask off the data before writing
+    uint8_t mask = (1 << (bits)) - 1;
+    data &= mask;
+
+    mask <<= shift;
+    val &= ~mask;          // remove the current data at that spot
+    val |= data << shift; // and add in the new data
+
+    write_req(regi,val);
 }
 
 void print_reg(uint8_t data){
