@@ -145,10 +145,33 @@ int main()
     //Reset Sequence
     MXC_DELAY_MSEC(10);
     write_bitslice(MPU6050_PWR_MGMT_1,0x01,1,7);
-    
+    MXC_DELAY_MSEC(10);
+    write_req(MPU6050_SIGNAL_PATH_RESET,0x07);
+    MXC_DELAY_MSEC(100);
 
-    // read_req(MPU6050_SIGNAL_PATH_RESET);
-    // print_reg(resp[0]);
+    //Initialization Sequence
+    //setSampleRateDivisor
+    write_req(MPU6050_SMPLRT_DIV,0x00);
+
+    //setFilterBandWidth
+    write_bitslice(MPU6050_CONFIG,0x00,3,0);
+
+    //setGyroRange
+    write_bitslice(MPU6050_GYRO_CONFIG,0x01,2,3);
+
+    //setAccelerometerRange
+    write_bitslice(MPU6050_ACCEL_CONFIG,0x00,2,3);
+
+    //set clock config to PLL with Gyro X reference
+    write_req(MPU6050_PWR_MGMT_1,0x01);
+
+    MXC_DELAY_MSEC(100);
+
+    while(1){
+        read_req(0x45);
+        print_reg(resp[0]);
+        MXC_DELAY_MSEC(500);
+    }
 }
 
 void read_req(uint8_t regi)
@@ -210,12 +233,12 @@ void write_req(uint8_t regi, uint8_t data)
     MXC_DELAY_MSEC(CMD_DELAY);
 }
 
-uint8_t read_bitslice(uint8_t regi,uint8_t bits,uint8_t shift){
-    read_req(regi);
-    uint8_t val = resp[0];
-    val >>= shift;
-    return val & ((1 << (bits)) - 1);
-}
+// uint8_t readslice(uint8_t regi,uint8_t bits,uint8_t shift){
+//     read_req(regi);
+//     uint8_t val = resp[0];
+//     val >>= shift;
+//     return val & ((1 << (bits)) - 1);
+// }
 
 void write_bitslice(uint8_t regi, uint8_t data, uint8_t bits, uint8_t shift)
 {
