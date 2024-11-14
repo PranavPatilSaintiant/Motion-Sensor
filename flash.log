@@ -21,7 +21,7 @@ Info : accepting 'gdb' connection from pipe
 Warn : Prefer GDB command "target extended-remote :pipe" instead of "target remote :pipe"
 target halted due to debug-request, current mode: Thread 
 xPSR: 0x01000000 pc: 0x000001b4 msp: 0x20004000
-Info : Padding image section 0 at 0x1000a8ec with 4 bytes
+Info : Padding image section 0 at 0x1000a9d4 with 12 bytes
 target halted due to debug-request, current mode: Thread 
 xPSR: 0x01000000 pc: 0x000001b4 msp: 0x20004000
 target halted due to debug-request, current mode: Thread 

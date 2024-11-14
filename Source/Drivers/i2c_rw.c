@@ -6,7 +6,6 @@ uint8_t read_req(uint8_t regi)
 {
     uint8_t TxBuff[MAX_COMMAND_LEN] = {0};
     TxBuff[0] = regi;
-    // uint8_t RxBuff[MAX_COMMAND_LEN] = {0};
     mxc_i2c_req_t SendCommand;
     SendCommand.i2c      = I2C_MASTER;
     SendCommand.addr     = I2C_SLAVE_ADDR;
@@ -59,7 +58,7 @@ void write_req(uint8_t regi, uint8_t data)
         printf("Error writing: %d\n", error);
         return FAILED;
     }
-    MXC_DELAY_MSEC(CMD_DELAY);
+    // MXC_DELAY_MSEC(CMD_DELAY);
 }
 
 uint8_t read_bitslice(uint8_t regi,uint8_t bits,uint8_t shift){

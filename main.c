@@ -115,10 +115,19 @@ int main()
     mpu6050_rst();
     mpu6050_init();
     print_reg(read_req(MPU6050_WHO_AM_I));
+    write_req(0x23,0x08);
+    print_reg(read_req(0x23));
 
     while(1){
-        printf("\nX: %f Y: %f Z: %f ",convertToAcceleration(accel_x_h(),accel_x_l()),convertToAcceleration(accel_y_h(),accel_y_l()),convertToAcceleration(accel_z_h(),accel_z_l()));
-        // printf("\nX: %f Y: %f Z: %f ",convertToAngularVelocity(gyro_x_h(),gyro_x_l()),convertToAngularVelocity(gyro_y_h(),gyro_y_l()),convertToAngularVelocity(gyro_z_h(),gyro_z_l()));
+        if(checkAngularVibration()==VIBRATING || checkLinearVibration()==VIBRATING){
+            printf("Vibration Detected\n");
+        }
+        else{
+            printf("Stable\n");
+        }
+        // MXC_DELAY_MSEC(10);
+        // printf("\nX: %d Y: %d Z: %d ",i8to16(a_x_h(),a_x_l()),i8to16(a_y_h(),a_y_l()),i8to16(a_z_h(),a_z_l()));
+        // printf("\nX: %f Y: %f Z: %f ",i8to16(g_x_h(),g_x_l()),i8to16(g_y_h(),g_y_l()),i8to16(g_z_h(),g_z_l()));
         // printf("\nTemperaure: %f",convertToTemperature(temperature_h(),temperature_l()));
     }
 }

@@ -8,6 +8,11 @@
 
 #define MPU6050_TEMP_SENSITIVITY 340.0  // Sensitivity scale factor for temperature
 #define MPU6050_TEMP_OFFSET 36.53       // Temperature offset in degrees Celsius
+
+#define AXIS_COUNT 3
+#define LIN_VIBRATION_THRESHOLD 1200
+#define ANG_VIBRATION_THRESHOLD 400
+
 mpu6050_rst(void)
 {
     //Reset Sequence
@@ -38,35 +43,45 @@ mpu6050_init(void)
 }
 
 // Accelerometer Data
-uint8_t accel_x_h(void){return read_req(0x3B);}
+uint8_t a_x_h(void){return read_req(0x3B);}
 
-uint8_t accel_x_l(void){return read_req(0x3C);}
+uint8_t a_x_l(void){return read_req(0x3C);}
 
-uint8_t accel_y_h(void){return read_req(0x3D);}
+uint8_t a_y_h(void){return read_req(0x3D);}
 
-uint8_t accel_y_l(void){return read_req(0x3E);}
+uint8_t a_y_l(void){return read_req(0x3E);}
 
-uint8_t accel_z_h(void){return read_req(0x3F);}
+uint8_t a_z_h(void){return read_req(0x3F);}
 
-uint8_t accel_z_l(void){return read_req(0x40);}
+uint8_t a_z_l(void){return read_req(0x40);}
 
 // Gyroscope Data
-uint8_t gyro_x_h(void){return read_req(0x43);}
+uint8_t g_x_h(void){return read_req(0x43);}
 
-uint8_t gyro_x_l(void){return read_req(0x44);}
+uint8_t g_x_l(void){return read_req(0x44);}
 
-uint8_t gyro_y_h(void){return read_req(0x45);}
+uint8_t g_y_h(void){return read_req(0x45);}
 
-uint8_t gyro_y_l(void){return read_req(0x46);}
+uint8_t g_y_l(void){return read_req(0x46);}
 
-uint8_t gyro_z_h(void){return read_req(0x47);}
+uint8_t g_z_h(void){return read_req(0x47);}
 
-uint8_t gyro_z_l(void){return read_req(0x48);}
+uint8_t g_z_l(void){return read_req(0x48);}
 
 // Temperature Data
 uint8_t temperature_h(void){return read_req(0x41);}
 
 uint8_t temperature_l(void){return read_req(0x42);}
+
+//Function for combining Registers 8bit registers value
+
+int16_t i8to16(uint8_t upper, uint8_t lower) {
+    // Combine the upper and lower bytes
+    int16_t rawValue = (upper << 8) | (uint8_t)lower;
+    return rawValue;
+}
+
+//Function for Converting data to Physical Quantities
 
 float convertToAcceleration(int8_t upper, int8_t lower) {
     // Combine the upper and lower bytes
@@ -99,4 +114,42 @@ float convertToTemperature(int8_t upper, int8_t lower) {
     float temperature_C = (rawValue / MPU6050_TEMP_SENSITIVITY) + MPU6050_TEMP_OFFSET;
 
     return temperature_C;
+}
+
+PhysicalState checkLinearVibration() {   
+    PhysicalState isVibrating = STABLE;
+    int16_t previous[AXIS_COUNT] = {i8to16(a_x_h(),a_x_l()),i8to16(a_y_h(),a_y_l()),i8to16(a_z_h(),a_z_l())}; // Store previuss readings
+    MXC_DELAY_MSEC(10);
+    float current[AXIS_COUNT] = {i8to16(a_x_h(),a_x_l()),i8to16(a_y_h(),a_y_l()),i8to16(a_z_h(),a_z_l())}; // Store current readings
+    // Check each axis for significant change indicating vibration
+    for(int i = 0; i < AXIS_COUNT; i++) {
+        int16_t delta = fabs(current[i] - previous[i]);
+        
+        // If any axis exceeds the vibration threshold, set isVibrating to true
+        if (abs(delta) > LIN_VIBRATION_THRESHOLD) {
+            isVibrating = VIBRATING;
+        }
+        // Update previous reading
+        previous[i] = current[i];
+    }
+    return isVibrating;
+}
+
+PhysicalState checkAngularVibration() {   
+    PhysicalState isVibrating = STABLE;
+    int16_t previous[AXIS_COUNT] = {i8to16(g_x_h(),g_x_l()),i8to16(g_y_h(),g_y_l()),i8to16(g_z_h(),g_z_l())}; // Store previuss readings
+    MXC_DELAY_MSEC(10);
+    float current[AXIS_COUNT] = {i8to16(g_x_h(),g_x_l()),i8to16(g_y_h(),g_y_l()),i8to16(g_z_h(),g_z_l())}; // Store current readings
+    // Check each axis for significant change indicating vibration
+    for(int i = 0; i < AXIS_COUNT; i++) {
+        int16_t delta = fabs(current[i] - previous[i]);
+        
+        // If any axis exceeds the vibration threshold, set isVibrating to true
+        if (abs(delta) > ANG_VIBRATION_THRESHOLD) {
+            isVibrating = VIBRATING;
+        }
+        // Update previous reading
+        previous[i] = current[i];
+    }
+    return isVibrating;
 }
